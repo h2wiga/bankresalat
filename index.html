@@ -4,82 +4,233 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>استعلام تسهیلات موسسه مالی و اعتباری رسالت</title>
-    <link href="https://fonts.googleapis.com/css2?family=Vazir&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazir:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* بهبودهای استایلی */
+        :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #27ae60;
+            --background-pattern: repeating-linear-gradient(45deg, #f0fff0 0, #f0fff0 5px, #e6ffe6 5px, #e6ffe6 10px);
+        }
+
+        /* هدر */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 8px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Vazir', sans-serif;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #2c3e50;
+        }
+
+        .admin-icon {
+            color: #27ae60;
+            font-size: 14px;
+        }
+
+        .header-time {
+            font-size: 11px;
+            color: #7f8c8d;
+            direction: ltr;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        /* بدنه اصلی */
         body {
             font-family: 'Vazir', sans-serif;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(0, 128, 0, 0.7));
-            backdrop-filter: blur(8px);
-            margin: 0;
-            padding: 20px;
+            background: var(--background-pattern);
             min-height: 100vh;
+            margin: 0;
+            padding: 60px 20px 20px;
             color: #2c3e50;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.85);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-            max-width: 500px;
-            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
         }
 
         .logo {
-            width: 180px;
-            margin-bottom: 25px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            width: 220px;
+            margin: 0 auto 30px;
+            display: block;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         #date-time {
-            font-size: 18px;
-            color: #27ae60;
-            margin-bottom: 25px;
-            direction: ltr;
+            font-size: 20px;
+            color: #34495e;
             text-align: center;
+            margin-bottom: 30px;
+            direction: ltr;
+            background: rgba(46, 204, 113, 0.1);
+            padding: 15px;
+            border-radius: 10px;
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            margin: 15px 0;
+            padding: 15px;
+            margin: 20px 0;
             border: 2px solid #bdc3c7;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+
+        input[type="text"]:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
         }
 
         input[type="text"]:focus {
-            border-color: #27ae60;
-            box-shadow: 0 0 8px rgba(39, 174, 96, 0.3);
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.3);
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 25px;
         }
 
         button {
-            background: linear-gradient(135deg, #27ae60, #219a52);
-            padding: 14px;
-            font-size: 17px;
-            letter-spacing: -0.5px;
-            margin-top: 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
+            display: inline-block;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
         }
 
         .result {
-            background: rgba(39, 174, 96, 0.08);
-            border: 2px solid #27ae60;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 25px;
-            text-align: right;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(46, 204, 113, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
             line-height: 2;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .result h3 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-size: 22px;
+            border-bottom: 2px solid rgba(46, 204, 113, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .result p {
+            font-size: 18px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .error {
             background: rgba(231, 76, 60, 0.1);
             border-color: #e74c3c;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            button {
+                width: 100%;
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="user-info">
+            <i class="fas fa-user-shield admin-icon"></i>
+            <span>همکار گرامی خانم حسینی زهرا خوش آمدید</span>
+        </div>
+        
+        <div class="header-time" id="header-time"></div>
+        
+        <button class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            خروج
+        </button>
+    </div>
+
     <div class="container">
         <img src="https://uploadkon.ir/uploads/4a7c08_25logoMobile.png" alt="Logo" class="logo">
         <h1>استعلام تسهیلات موسسه مالی و اعتباری رسالت</h1>
@@ -93,34 +244,94 @@
             onkeypress="return isNumberKey(event)"
         >
         
-        <button onclick="checkLoanStatus()">استعلام وضعیت تسهیلات</button>
+        <div class="button-container">
+            <button onclick="checkLoanStatus()">استعلام وضعیت</button>
+        </div>
         
         <div class="result" id="result"></div>
     </div>
 
     <script>
-        // تایمر بروزرسانی زمان
-        let timer;
-        function startTimer() {
-            timer = setInterval(displayDateTime, 1000);
-            displayDateTime();
+        // تابع تبدیل تاریخ میلادی به شمسی
+        function gregorianToShamsi(date) {
+            const gYear = date.getFullYear();
+            const gMonth = date.getMonth() + 1;
+            const gDay = date.getDate();
+            const gDaysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            
+            if (gYear % 4 === 0 && (gYear % 100 !== 0 || gYear % 400 === 0)) {
+                gDaysInMonth[1] = 29;
+            }
+
+            let gy2 = gYear - 621;
+            let shYear = gy2 - 1;
+            let shMonth = 1;
+            let shDay = 1;
+            let dayDiff = 0;
+
+            for (let i = 0; i < gMonth - 1; i++) {
+                dayDiff += gDaysInMonth[i];
+            }
+            dayDiff += gDay;
+
+            let shDaysInYear = (shYear % 4 === 0) ? 366 : 365;
+            while (dayDiff > shDaysInYear) {
+                dayDiff -= shDaysInYear;
+                shYear++;
+                shDaysInYear = (shYear % 4 === 0) ? 366 : 365;
+            }
+
+            while (dayDiff > 30) {
+                if (shMonth === 6 || shMonth === 9 || shMonth === 11) {
+                    if (dayDiff <= 30) break;
+                    dayDiff -= 30;
+                    shMonth++;
+                } else {
+                    if (shMonth === 1 || shMonth === 2 || shMonth === 4 || shMonth === 7 || shMonth === 8 || shMonth === 10 || shMonth === 12) {
+                        dayDiff -= 31;
+                        shMonth++;
+                    } else {
+                        dayDiff -= 29;
+                        if (dayDiff > 0) shMonth++;
+                    }
+                }
+            }
+
+            shDay = dayDiff;
+            return `${shYear}/${shMonth < 10 ? '0' + shMonth : shMonth}/${shDay < 10 ? '0' + shDay : shDay}`;
+        }
+
+        // نمایش تاریخ و زمان
+        function updateDateTime() {
+            const now = new Date();
+            const shamsiDate = gregorianToShamsi(now);
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const timeString = now.toLocaleTimeString('fa-IR', options);
+            
+            document.getElementById('date-time').innerHTML = `
+                تاریخ شمسی: ${shamsiDate}<br>
+                زمان: ${timeString}
+            `;
+        }
+
+        // بروزرسانی زمان در هدر
+        function updateHeaderTime() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('header-time').innerText = now.toLocaleTimeString('fa-IR', options);
         }
 
         // اعتبارسنجی عددی بودن ورودی
         function isNumberKey(evt) {
             const charCode = (evt.which) ? evt.which : evt.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
-            }
-            return true;
+            return !(charCode > 31 && (charCode < 48 || charCode > 57));
         }
 
-        // نمایش اطلاعات بر اساس کد ملی
+        // نمایش اطلاعات مشتری
         function checkLoanStatus() {
             const nationalCode = document.getElementById('nationalCode').value.trim();
             const resultDiv = document.getElementById('result');
 
-            // اعتبارسنجی پیشرفته
             if (nationalCode.length !== 10 || !/^\d+$/.test(nationalCode)) {
                 showError('لطفاً کد ملی معتبر ۱۰ رقمی وارد کنید');
                 return;
@@ -130,14 +341,11 @@
             switch(nationalCode) {
                 case '3341394109':
                     resultHTML = `
-                        case '3341394109':
-    resultHTML = `
-        <h3>مشتری: عیسی شریفی</h3>
-        <p>🔴 تسهیلات تسویه نشده: 1 مورد</p>
-        <p>✅ اقساط پرداخت شده: 6 مورد</p>
-        <p>💰 جمع پرداختی: .(17,208,000,000 ریال)     <p>⚖️ بدهی معوق: 0 ریال</p>
-    `;
-    break;
+                        <h3>مشتری: عیسی شریفی</h3>
+                        <p>🔴 تسهیلات تسویه نشده: 1 مورد</p>
+                        <p>✅ اقساط پرداخت شده: 6 مورد</p>
+                        <p>💰 جمع پرداختی: ${(17208000000).toLocaleString()} ریال</p>
+                        <p>⚖️ بدهی معوق: 0 ریال</p>
                     `;
                     break;
                 
@@ -166,8 +374,13 @@
             resultDiv.classList.add('error');
         }
 
-        // بقیه توابع (تبدیل تاریخ و نمایش زمان) مانند قبل باقی می‌ماند
-        // [کدهای مربوط به تبدیل تاریخ و نمایش زمان مانند قبل]
+        // راه‌اندازی تایمرها
+        setInterval(() => {
+            updateDateTime();
+            updateHeaderTime();
+        }, 1000);
+        updateDateTime();
+        updateHeaderTime();
     </script>
 </body>
-</html>
+            </html>
