@@ -3,95 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استعلام مانده تسهیلات - موسسه مالی رسالت</title>
-    <link href="https://fonts.googleapis.com/css2?family=Vazir&display=swap" rel="stylesheet">
+    <title>استعلام تسهیلات موسسه مبالی و اعتباری رسالت</title>
     <style>
         body {
-            font-family: 'Vazir', sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(0, 128, 0, 0.6));
+            backdrop-filter: blur(10px);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
         }
         .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.8);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        }
-        h1 {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
-            color: #333;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
             margin-bottom: 20px;
         }
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
         }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #e9ecef;
-            font-size: 16px;
+        #date-time {
+            font-size: 18px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <img src="https://uploadkon.ir/uploads/4a7c08_25logoMobile.png" alt="Logo" class="logo">
+        <h1>استعلام تسهیلات موسسه مبالی و اعتباری رسالت</h1>
+        <div id="date-time">در حال بارگذاری تاریخ و زمان...</div>
+    </div>
 
-<div class="container">
-    <h1>استعلام مانده تسهیلات</h1>
-    <input type="text" id="nationalCode" placeholder="کد ملی را وارد کنید">
-    <button onclick="checkLoanStatus()">استعلام</button>
-    
-    <div class="result" id="result" style="display: none;"></div>
-</div>
+    <script>
+        // Function to convert Gregorian date to Shamsi (Persian) date
+        function gregorianToShamsi(date) {
+            const gYear = date.getFullYear();
+            const gMonth = date.getMonth() + 1;
+            const gDay = date.getDate();
 
-<script>
-    function checkLoanStatus() {
-        const nationalCode = document.getElementById('nationalCode').value;
-        const resultDiv = document.getElementById('result');
-        let resultText = '';
+            const gDaysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            if (gYear % 4 === 0 && (gYear % 100 !== 0 || gYear % 400 === 0)) {
+                gDaysInMonth[1] = 29;
+            }
 
-        if (nationalCode === '3330227796') {
-            resultText = 'مشتری سجاد شریفی<br>' +
-                         'تعداد تسهیلات تسویه نشده: 0 مورد<br>' +
-                         'تعداد تسهیلات تسویه شده: 2 مورد<br>' +
-                         'شماره تسهیلات: 12075593*****582 و 12574****581';
-        } else if (nationalCode === '3341394109') {
-            resultText = 'مشتری عیسی شریفی<br>' +
-                         'تعداد تسهیلات تسویه نشده: 1 مورد<br>' +
-                         'تعداد اقساط پرداخت شده: 6 مورد<br>' +
-                         'جمع پرداختی: 1,720,8000 ریال<br>' +
-                         'بدهی معوق: 0 ریال';
-        } else {
-            resultText = 'مشتری با این کد ملی یافت نشد.';
+            let gy2 = gYear - 621;
+            let shYear = gy2 - 1;
+            let shMonth = 1;
+            let shDay = 1;
+
+            let dayDiff = 0;
+            for (let i = 0; i < gMonth - 1; i++) {
+                dayDiff += gDaysInMonth[i];
+            }
+            dayDiff += gDay - 1;
+
+            if (dayDiff <= 79) {
+                shYear -= 1;
+                dayDiff += 286;
+            } else {
+                dayDiff -= 79;
+            }
+
+            if (dayDiff <= 186) {
+                shMonth = Math.floor(dayDiff / 31) + 1;
+                shDay = dayDiff % 31 + 1;
+            } else {
+                shMonth = Math.floor((dayDiff - 186) / 30) + 7;
+                shDay = (dayDiff - 186) % 30 + 1;
+            }
+
+            return `${shYear}/${shMonth}/${shDay}`;
         }
 
-        resultDiv.innerHTML = resultText;
-        resultDiv.style.display = 'block';
-    }
-</script>
+        // Function to update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const shamsiDate = gregorianToShamsi(now);
+            const time = now.toLocaleTimeString('fa-IR');
+            document.getElementById('date-time').textContent = `تاریخ: ${shamsiDate} - زمان: ${time}`;
+        }
 
-</body>
-</html>
+        // Update date and time every second
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Initial call
+    </script>
+</body
