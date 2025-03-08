@@ -1,5 +1,4 @@
-
-            for<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +20,7 @@
             color: #333;
         }
         .container {
-            background: rgba(255, 255, 255, 0.5); /* شفافیت 50 درصد */
+            background: rgba(255, 255, 255, 0.5);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -87,22 +86,80 @@
     </div>
 
     <script>
-        // Function to convert Gregorian date to Shamsi (Persian) date
+        // تابع دقیق تبدیل تاریخ میلادی به شمسی
         function gregorianToShamsi(date) {
             const gYear = date.getFullYear();
             const gMonth = date.getMonth() + 1;
             const gDay = date.getDate();
 
             const gDaysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-            if (gYear % 4 === 0 && (gYear % 100 !== 0 || gYear % 400 === 0)) {
+            if ((gYear % 4 === 0 && gYear % 100 !== 0) || gYear % 400 === 0) {
                 gDaysInMonth[1] = 29;
             }
 
-            let gy2 = gYear - 621;
-            let shYear = gy2 - 1;
-            let shMonth = 1;
-            let shDay = 1;
-
-            let dayDiff = 0;
+            let dayOfYear = 0;
             for (let i = 0; i < gMonth - 1; i++) {
-                day
+                dayOfYear += gDaysInMonth[i];
+            }
+            dayOfYear += gDay;
+
+            const nowruzDay = 79;
+            let shYear = gYear - 621;
+            
+            if (dayOfYear >= nowruzDay) {
+                dayOfYear -= nowruzDay - 1;
+            } else {
+                shYear--;
+                const isLeapYear = ((shYear - 474) % 2820) < 682;
+                dayOfYear += isLeapYear ? 366 : 365;
+                dayOfYear -= nowruzDay - 1;
+            }
+
+            const shamsiMonths = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+            const isCurrentLeap = ((shYear - 474) % 2820) < 682;
+            if (isCurrentLeap) shamsiMonths[11] = 30;
+
+            let shMonth = 1;
+            for (let i = 0; i < shamsiMonths.length; i++) {
+                if (dayOfYear > shamsiMonths[i]) {
+                    dayOfYear -= shamsiMonths[i];
+                    shMonth++;
+                } else break;
+            }
+            
+            return `${shYear}/${shMonth.toString().padStart(2, '0')}/${dayOfYear.toString().padStart(2, '0')}`;
+        }
+
+        // بروزرسانی خودکار تاریخ و زمان
+        function updateDateTime() {
+            const now = new Date();
+            const shamsiDate = gregorianToShamsi(now);
+            const time = now.toLocaleTimeString('fa-IR');
+            document.getElementById('date-time').innerHTML = `تاریخ: ${shamsiDate} - ساعت: ${time}`;
+        }
+
+        // استعلام تسهیلات
+        function checkLoanStatus() {
+            const nationalCode = document.getElementById('nationalCode').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!nationalCode || nationalCode.length !== 10 || isNaN(nationalCode)) {
+                resultDiv.innerHTML = "❌ لطفا کد ملی را به صورت 10 رقمی و عددی وارد نمایید";
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+        // شبیه‌سازی پاسخ سرور
+        const results = [
+            '✅ تسهیلات فعال: مبلغ قابل برداشت ۷۵ میلیون تومان',
+            '⛔ امکان اعطای تسهیلات وجود ندارد',
+            '🔍 در حال بررسی - لطفا 72 ساعت دیگر مراجعه کنید'
+        ];
+        
+        resultDiv.innerHTML = results[Math.floor(Math.random() * results.length)];
+        resultDiv.style.display = 'block';
+    }
+    </script>
+
+
+
