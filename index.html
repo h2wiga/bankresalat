@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa">
 <head>
@@ -86,80 +87,86 @@
     </div>
 
     <script>
-        // تابع دقیق تبدیل تاریخ میلادی به شمسی
+        // Function to convert Gregorian date to Shamsi (Persian) date
         function gregorianToShamsi(date) {
             const gYear = date.getFullYear();
             const gMonth = date.getMonth() + 1;
             const gDay = date.getDate();
-
             const gDaysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-            if ((gYear % 4 === 0 && gYear % 100 !== 0) || gYear % 400 === 0) {
+            
+            if (gYear % 4 === 0 && (gYear % 100 !== 0 || gYear % 400 === 0)) {
                 gDaysInMonth[1] = 29;
             }
 
-            let dayOfYear = 0;
-            for (let i = 0; i < gMonth - 1; i++) {
-                dayOfYear += gDaysInMonth[i];
-            }
-            dayOfYear += gDay;
-
-            const nowruzDay = 79;
-            let shYear = gYear - 621;
-            
-            if (dayOfYear >= nowruzDay) {
-                dayOfYear -= nowruzDay - 1;
-            } else {
-                shYear--;
-                const isLeapYear = ((shYear - 474) % 2820) < 682;
-                dayOfYear += isLeapYear ? 366 : 365;
-                dayOfYear -= nowruzDay - 1;
-            }
-
-            const shamsiMonths = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
-            const isCurrentLeap = ((shYear - 474) % 2820) < 682;
-            if (isCurrentLeap) shamsiMonths[11] = 30;
-
+            let gy2 = gYear - 621;
+            let shYear = gy2 - 1;
             let shMonth = 1;
-            for (let i = 0; i < shamsiMonths.length; i++) {
-                if (dayOfYear > shamsiMonths[i]) {
-                    dayOfYear -= shamsiMonths[i];
-                    shMonth++;
-                } else break;
+            let shDay = 1;
+            let dayDiff = 0;
+
+            for (let i = 0; i < gMonth - 1; i++) {
+                dayDiff += gDaysInMonth
+                [i];
             }
-            
-            return `${shYear}/${shMonth.toString().padStart(2, '0')}/${dayOfYear.toString().padStart(2, '0')}`;
+            dayDiff += gDay;
+
+            let shDaysInYear = (shYear % 4 === 0) ? 366 : 365;
+            while (dayDiff > shDaysInYear) {
+                dayDiff -= shDaysInYear;
+                shYear++;
+                shDaysInYear = (shYear % 4 === 0) ? 366 : 365;
+            }
+
+            while (dayDiff > 30) {
+                if (shMonth === 6 || shMonth === 9 || shMonth === 11) {
+                    if (dayDiff <= 30) break;
+                    dayDiff -= 30;
+                    shMonth++;
+                } else {
+                    if (shMonth === 1 || shMonth === 2 || shMonth === 4 || shMonth === 7 || shMonth === 8 || shMonth === 10 || shMonth === 12) {
+                        dayDiff -= 31;
+                        shMonth++;
+                    } else {
+                        dayDiff -= 29; // For month 3
+                        if (dayDiff > 0) shMonth++;
+                    }
+                }
+            }
+
+            shDay = dayDiff;
+            return `${shYear}/${shMonth < 10 ? '0' + shMonth : shMonth}/${shDay < 10 ? '0' + shDay : shDay}`;
         }
 
-        // بروزرسانی خودکار تاریخ و زمان
-        function updateDateTime() {
+        // Function to display current date and time in Shamsi format
+        function displayDateTime() {
             const now = new Date();
             const shamsiDate = gregorianToShamsi(now);
-            const time = now.toLocaleTimeString('fa-IR');
-            document.getElementById('date-time').innerHTML = `تاریخ: ${shamsiDate} - ساعت: ${time}`;
+            const options = { hour: 'numeric', minute: 'numeric', second: 'numeric' };
+            const nowTime = now.toLocaleTimeString('fa-IR', options);
+            document.getElementById('date-time').innerText = `تاریخ: ${shamsiDate} - زمان: ${nowTime}`;
         }
 
-        // استعلام تسهیلات
+        // Function to check loan status (mock implementation)
         function checkLoanStatus() {
             const nationalCode = document.getElementById('nationalCode').value;
             const resultDiv = document.getElementById('result');
 
-            if (!nationalCode || nationalCode.length !== 10 || isNaN(nationalCode)) {
-                resultDiv.innerHTML = "❌ لطفا کد ملی را به صورت 10 رقمی و عددی وارد نمایید";
+            // Simple validation for national code
+            if (nationalCode.length !== 10 || isNaN(nationalCode)) {
+                resultDiv.innerText = 'لطفاً کد ملی معتبری وارد کنید.';
                 resultDiv.style.display = 'block';
                 return;
             }
 
-        // شبیه‌سازی پاسخ سرور
-        const results = [
-            '✅ تسهیلات فعال: مبلغ قابل برداشت ۷۵ میلیون تومان',
-            '⛔ امکان اعطای تسهیلات وجود ندارد',
-            '🔍 در حال بررسی - لطفا 72 ساعت دیگر مراجعه کنید'
-        ];
-        
-        resultDiv.innerHTML = results[Math.floor(Math.random() * results.length)];
-        resultDiv.style.display = 'block';
-    }
+            // Mock response (replace this with actual API call)
+            resultDiv.innerText = `وضعیت تسهیلات برای کد ملی ${nationalCode}: تسهیلات فعال است.`;
+            resultDiv.style.display = 'block';
+        }
+
+        // Display the current date and time on page load
+        window.onload = displayDateTime;
     </script>
-
-
-
+</body>
+</html>
+ 
+ 
