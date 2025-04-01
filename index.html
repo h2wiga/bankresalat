@@ -1,4 +1,3 @@
-3341394109
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -16,11 +15,27 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #b2f5ea 0%, #81e6d9 100%);
             min-height: 100vh;
             margin: 0;
             padding: 20px;
             color: #2c3e50;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            background: url('https://uploadkon.ir/uploads/265301_25bank-resalat.jpg') no-repeat center center;
+            background-size: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            filter: blur(5px);
+            z-index: -1;
         }
 
         .header {
@@ -40,6 +55,9 @@
             gap: 10px;
             font-size: 14px;
             color: #2a5298;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
         }
 
         .admin-icon {
@@ -177,6 +195,11 @@
                 gap: 10px;
                 text-align: center;
             }
+
+            .user-info {
+                position: static;
+                margin-top: 10px;
+            }
         }
 
         /* استایل برای صفحه لودینگ */
@@ -203,6 +226,16 @@
             font-size: 24px;
             color: #1e3c72;
             text-align: center;
+            animation: loadingAnimation 1.5s infinite;
+        }
+
+        @keyframes loadingAnimation {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
         }
     </style>
 </head>
@@ -334,4 +367,4 @@
         updateDateTime();
     </script>
 </body>
-  </html>
+</html>
