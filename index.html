@@ -22,6 +22,10 @@
             color: #2c3e50;
             position: relative;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
 
         body::before {
@@ -47,6 +51,8 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
         }
 
         .user-info {
@@ -55,9 +61,6 @@
             gap: 10px;
             font-size: 14px;
             color: #2a5298;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
         }
 
         .admin-icon {
@@ -95,6 +98,9 @@
             width: 200px;
             margin: 0 auto 30px;
             display: block;
+            background: green;
+            padding: 20px;
+            border-radius: 10px;
         }
 
         h1 {
@@ -209,7 +215,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -222,20 +228,50 @@
             visibility: hidden;
         }
 
-        .loading-text {
-            font-size: 24px;
-            color: #1e3c72;
-            text-align: center;
-            animation: loadingAnimation 1.5s infinite;
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #fff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
         }
 
-        @keyframes loadingAnimation {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 2px solid black;
+            border-radius: 10px;
+            z-index: 1000;
+            max-width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 2px solid red;
+            border-radius: 10px;
+            z-index: 1000;
+            color: red;
+            font-size: 24px;
+            max-width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -255,7 +291,7 @@
     </div>
 
     <div class="loading-overlay hidden" id="loadingOverlay">
-        <div class="loading-text">در حال بارگیری...</div>
+        <div class="loading-spinner"></div>
     </div>
 
     <div class="container">
@@ -278,15 +314,28 @@
         <div class="result" id="result"></div>
     </div>
 
-    <script>
-        // تابع تبدیل تاریخ میلادی به شمسی (همان نسخه قبلی)
-        // ... کدهای جاوااسکریپت بدون تغییر باقی میمانند ...
+    <div class="popup" id="customerPopup">
+        <p id="popupText"></p>
+    </div>
+    <div class="error-popup" id="errorPopup">
+        دسترسی غیر مجاز
+    </div>
 
-        // نمایش اطلاعات مشتری
+    <script>
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+
         function checkLoanStatus() {
             const nationalCode = document.getElementById('nationalCode').value.trim();
             const resultDiv = document.getElementById('result');
             const loadingOverlay = document.getElementById('loadingOverlay');
+            const customerPopup = document.getElementById('customerPopup');
+            const popupText = document.getElementById('popupText');
+            const errorPopup = document.getElementById('errorPopup');
 
             if (nationalCode.length !== 10 || !/^\d+$/.test(nationalCode)) {
                 showError('لطفاً کد ملی معتبر ۱۰ رقمی وارد کنید');
@@ -303,10 +352,16 @@
                         resultHTML = `
                             <h3>مشتری: عیسی شریفی</h3>
                             <p>🔴 تسهیلات تسویه نشده: 1 مورد</p>
-                            <p>✅ اقساط پرداخت شده: 6 مورد</p>
-                            <p>💰 جمع پرداختی: ${(1748000000).toLocaleString()} ریال</p>
+                            <p>✅ اقساط پرداخت شده: 8 مورد</p>
+                            <p>💰 جمع پرداختی: ${(2304000000).toLocaleString()} ریال</p>
                             <p>⚖️ بدهی معوقه تا 1404/01/01: ندارد قسط ۰ ریال</p>
                         `;
+                        popupText.innerHTML = resultHTML;
+                        customerPopup.style.display = 'block';
+                        setTimeout(() => {
+                            customerPopup.style.display = 'none';
+                            errorPopup.style.display = 'block';
+                        }, 3000);
                         break;
                     
                     case '3330227796':
@@ -316,6 +371,8 @@
                             <p>🎉 تسهیلات تسویه شده: 2 مورد</p>
                             <p>💵 بدهی تسهیلات: 0 ریال</p>
                         `;
+                        popupText.innerHTML = resultHTML;
+                        customerPopup.style.display = 'block';
                         break;
 
                     case '3330075899':
@@ -327,6 +384,8 @@
                             <p>📅 تعداد اقساط تا تسویه نهایی: تسهیلات شماره**58*1078851**4 در تاریخ 1404/01/09 تسویه گردید  </p>
                             <p>💰 مبلغ تسویه با احتساب تخفیف: ${(0).toLocaleString()} ریال</p>
                         `;
+                        popupText.innerHTML = resultHTML;
+                        customerPopup.style.display = 'block';
                         break;
 
                     default:
@@ -344,14 +403,12 @@
             }, 4000); // تاخیر ۴ ثانیه ای
         }
 
-        // نمایش خطا
         function showError(message) {
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = `<span style="color:#e74c3c">⛔ ${message}</span>`;
             resultDiv.classList.add('error');
         }
 
-        // بروزرسانی زمان
         function updateDateTime() {
             const now = new Date();
             const options = { 
